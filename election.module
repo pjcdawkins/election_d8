@@ -3,3 +3,46 @@
  * @file
  * Election.
  */
+
+/**
+ * Implements hook_permission().
+ */
+function election_permission() {
+  $permissions = array(
+    'administer elections' => array(
+      'title' => t('Administer elections'),
+      'description' => t('Alter the fields and display settings for election types.'),
+    ),
+    'delete any election' => array(
+      'title' => t('Delete any election'),
+      'description' => t('Delete any elections, regardless of who owns them.'),
+      'restrict access' => TRUE,
+      'warning' => t('This permission is dangerous: deleting an election automatically deletes ALL associated data, for example votes.'),
+    ),
+    'bypass running election lock' => array(
+      'title' => t('Bypass running election lock'),
+    ),
+    'edit any election' => array(
+      'title' => t('Edit any election'),
+      'description' => t('Edit any elections, regardless of ownership, and also administer the posts and candidates for those elections.'),
+    ),
+    'create elections' => array(
+      'title' => t('Create elections'),
+    ),
+    'delete own elections' => array(
+      'title' => t('Delete own elections'),
+      'description' => t('This allows the user to delete their own elections.'),
+      'restrict access' => TRUE,
+      'warning' => t('This permission is dangerous: deleting an election automatically deletes ALL associated data, for example votes.'),
+    ),
+    'edit own elections' => array(
+      'title' => t('Edit own elections'),
+      'description' => t('This allows the user to edit their own elections, and to administer the posts and candidates for those elections.'),
+    ),
+    'view published elections' => array(
+      'title' => t('View published elections'),
+      'description' => t("This permission allows the user to view published elections, including those elections' posts and any published candidates."),
+    ),
+  );
+  return $permissions;
+}
