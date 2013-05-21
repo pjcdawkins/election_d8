@@ -1,0 +1,6 @@
+election_overview_list:
+  pattern: '/elections'
+  defaults:
+    _content: '\Drupal\election\ElectionController::overviewList'
+  requirements:
+    _permission: 'view published elections'
