@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Election module.
+ */
+
+use Drupal\Component\Uuid\Uuid;
+use Drupal\Core\Language\Language;
+
+require_once 'includes/election.constants.inc';
+
+/**
+ * Implements hook_schema().
+ */
+function election_schema() {
+
+  $schema = array();
+
+  $schema['election'] = array(
+    'description' => 'The main table for the election module.',
+    'fields' => array(
+      'election_id' => array(
+        'description' => 'Primary key: identifier for an election.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uuid' => array(
+        'description' => 'Unique Key: Universally unique identifier for this entity.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ),
+      'type' => array(
+        'description' => 'The type of the election (machine name).',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+      // @todo split title into separate table along with other D8 entity properties?
+      // see https://drupal.org/node/2057401 for what's happening with node.module
+      'title' => array(
+        'description' => 'The title of the election - a human-readable identifier.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid of the election\'s owner/creator.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'published' => array(
+        'description' => 'Allows view access to all those with the "view published elections" permission.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'vstatus' => array(
+        'description' => sprintf(
+          'The voting status: open %d, closed %d, or scheduled %d.',
+          ELECTION_STATUS_OPEN,
+          ELECTION_STATUS_CLOSED,
+          ELECTION_STATUS_SCHEDULED
+        ),
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => ELECTION_STATUS_CLOSED,
+      ),
+      'vopen_time' => array(
+        'description' => 'The Unix timestamp for when voting opens (if scheduled).',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'vclose_time' => array(
+        'description' => 'The Unix timestamp for when voting closes (if scheduled).',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'nstatus' => array(
+        'description' => sprintf(
+          'The nominations status: open %d, closed %d, or scheduled %d.',
+          ELECTION_STATUS_OPEN,
+          ELECTION_STATUS_CLOSED,
+          ELECTION_STATUS_SCHEDULED
+        ),
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => ELECTION_STATUS_CLOSED,
+      ),
+      'nopen_time' => array(
+        'description' => 'The Unix timestamp for when nominations open (if scheduled).',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'nclose_time' => array(
+        'description' => 'The Unix timestamp for when nominations close (if scheduled).',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'settings' => array(
+        'description' => 'A serialized array of any further settings for this election.',
+        'type' => 'blob',
+        'size' => 'normal',
+        'serialize' => TRUE,
+        'not null' => FALSE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp for when the election was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp for when the election was most recently changed.',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('election_id'),
+    'indexes' => array(
+      'type' => array('type'),
+      'uid' => array('uid'),
+      'published' => array('published'),
+      'vstatus' => array('vstatus'),
+      'nstatus' => array('nstatus'),
+      'vperiod' => array('vopen_time', 'vclose_time'),
+      'nperiod' => array('nopen_time', 'nclose_time'),
+      'created' => array('created'),
+      'title' => array('title'),
+    ),
+  );
+
+  return $schema;
+
+}
