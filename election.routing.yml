@@ -1,6 +1,14 @@
-election_overview_list:
-  pattern: '/elections'
+election.list:
+  path: '/elections'
   defaults:
-    _content: '\Drupal\election\ElectionController::overviewList'
+    _content: '\Drupal\election\Controller\ElectionController::overviewList'
   requirements:
     _permission: 'view published elections'
+
+election.settings:
+  # @todo change config path
+  path: '/admin/config/system/election'
+  defaults:
+    _form: '\Drupal\election\Form\ElectionSettingsForm'
+  requirements:
+    _permission: 'administer elections'
