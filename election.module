@@ -5,25 +5,6 @@
  */
 
 /**
- * Implements hook_menu().
- */
-function election_menu() {
-  $items['elections'] = array(
-    'route_name' => 'election.list',
-    'title' => 'Elections',
-    'description' => 'List elections.',
-    'type' => MENU_NORMAL_ITEM, // Default.
-  );
-  $items['admin/config/system/election'] = array(
-    'route_name' => 'election.settings',
-    'title' => 'Elections',
-    'description' => 'Administer elections.',
-    'type' => MENU_NORMAL_ITEM, // Default.
-  );
-  return $items;
-}
-
-/**
  * Implements hook_permission().
  */
 function election_permission() {
