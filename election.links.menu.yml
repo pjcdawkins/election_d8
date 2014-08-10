@@ -1,0 +1,9 @@
+election.admin.structure.settings:
+  title: 'Election settings'
+  description: 'Configure elections.'
+  route_name: election.settings
+  parent: system.admin_structure
+
+election.list:
+  title: Elections
+  route_name: election.list
